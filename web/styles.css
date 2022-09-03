@@ -1,0 +1,87 @@
+*{
+   font-family: sans-serif;
+   font-weight: normal;
+   font-size: 1.1em;
+}
+
+button {
+   border-width: 2px;
+   border-spacing: 30px;
+   border-radius: 20%;
+   padding: 5px 5px 5px 5px;
+   margin:  5px 5px 5px 5px;
+}
+
+
+.luecke {
+   background-color: aqua;
+}
+
+.focus {
+   background-color: #61D7A4;
+}
+.correct {
+   background-color: chartreuse;
+}
+.incorrect {
+   background-color: tomato;
+}
+
+.grid-container {
+   display: grid;
+   background-color: beige;
+   grid-template-columns: 10px 1fr 10px;
+   grid-template-rows: 30px 1fr;
+}
+
+.grid-item {
+   border: 2px solid blue;
+   grid-row-start: 1;
+}
+.lueckentext {
+   margin-top: 80px;
+}
+.all {
+   padding: 1em 1em 1em 1em;
+}
+/* .app {
+   border: #040 2px solid;
+   margin-top: 20px;
+   margin-bottom: 20px;
+   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+   font-weight: bolder;
+}
+*/
+.select_text {
+   background-color: orange;
+/*   position: fixed; */
+   width: 80%;
+   padding-left: 0.5em;
+   padding-right: 0.5em;
+   padding-top: 0.3em;
+   padding-bottom: 0.2em;
+ }
+
+ .stats {
+   background-color: bisque;
+   position: fixed;
+   width: 80%;
+   padding-left: 0.5em;
+   padding-right: 0.5em;
+   padding-top: 0.3em;
+   padding-bottom: 0.2em;
+   width: 7em;
+   top: 0.4em;
+   right: 0.4em;
+ }
+
+div#log_output {
+   width:800px;
+   padding:15px;
+   border:grey 5px solid;
+   margin:10x; 
+   font-family: 'Courier New', Courier, monospace;
+   font-size: 10px;
+}
+   
+
