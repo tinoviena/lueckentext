@@ -1,9 +1,16 @@
 from deta import Deta
 from os import environ
+import sys
 from datetime import datetime
 import hashlib
 
-deta = Deta(environ["deta_project_key"])
+dpk = environ.get("deta_project_key")
+if(dpk):
+   deta = Deta(environ["deta_project_key"])
+else:
+   print("\n==========================================\n    ATTENTION!!         \n==========================================\nPlease set an environment variable\n called 'deta_project_key'\n containing the deta project key\n you can generate in your\n Deta dashboard https://web.deta.sh/.\n==========================================")
+   sys.exit(100)
+
 luecken_logs = deta.Base("luecken_logs")
 cache = []
 
