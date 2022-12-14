@@ -1,0 +1,2 @@
+# startup command for Azure AppService
+python main.py

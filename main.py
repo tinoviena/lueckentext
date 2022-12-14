@@ -1,10 +1,12 @@
 import src.get_text as get_text
 import src.replace as replace
+import src.luecken as luecken
 import logging
 import json
 import base64
 import persistence
 import urllib.parse
+import typing
 from flask import Flask, render_template, send_from_directory, request, redirect
 
 log = logging.getLogger("app.py")
@@ -57,6 +59,8 @@ def space(space_id):
   html += '<p><span id="check_result" class="stats animate__backInLeft">Korrekt: 0 inkorrekt: 0 total: 0</span>'
   html += '<div id="select_text" class="select_text">wikipedia artikel <input id="select_text_input" placeholder="Titel eines Wikipedia-Artikels">'
   html += '<button id="ok_button" class="ok_button animate__backInLeftf">OK</button><button id="check_button" class="check_button">Check</button>'
+  html += '<button id="verb_ok_button" class="ok_button animate__backInLeftf">Verben</button>'
+  html += '<button id="präp_ok_button" class="ok_button animate__backInLeftf">Präpositionen</button>'
   #html += 'Korrekt: 0, inkorrekt: 0, total: 0'
   html += '</div>'
   html += '<div id="lueckentext" class="lueckentext"></div>'
@@ -77,15 +81,37 @@ def space_log(space):
 @app.route("/wikipedia/<path:article_title>")
 def wikipedia(article_title):
   article_title = urllib.parse.quote(article_title)
-  (html_luecken, replaced) = lueckentext(article_title)
-  html_luecken += add_data(article_title, replaced)
+  html_luecken = ""  
+  replace_type = request.args.get("replace")
+
+  if(replace_type == None):
+    (html_luecken, replaced) = lueckentext(fetch_text(article_title))
+    html_luecken += add_data(article_title, replaced)
+  else:
+    ps = fetch_text(article_title)
+    replaces = {}
+    for i,p in enumerate(ps):
+      orig_text = p.text
+      lue_text = ""
+      replace_list = {}
+      if(replace_type == "verben"):
+        (lue_text, replace_list) = luecken.get_verben_lueckentext(orig_text, i)
+      elif(replace_type == "präp"):
+        (lue_text, replace_list) = luecken.get_präpositionen_lueckentext(orig_text, i)  
+      print(f"wikipedia verben: para no={i}")
+      html_luecken += "<p>"+lue_text+"</p>"
+      replaces.update(replace_list)
+    html_luecken += add_data(article_title, {"replaces":replaces})
   return html_luecken
 
-def lueckentext(article_title :str) -> str:
-  ret_html = ""
-
+def fetch_text(article_title:str) -> typing.List:
   ps = get_text.from_wikipedia(article_title)
+  #ps = get_text.from_heute(article_title)
+  print(f"ps: {len(ps)}")
+  return(ps)
 
+def lueckentext(ps) -> str:
+  ret_html = ""
   log.debug(f'Found {len(ps)} paragraphs')
   replaced = {}
   for i, p in enumerate(ps):
@@ -141,4 +167,9 @@ def add_data(article_title, json_obj):
     return r
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", debug=True)
+  import os
+  port = os.environ.get('PORT')
+  print(f'port from env: [{port}]')
+  if (port==None or port==""):
+    port = 8000
+  app.run(host="0.0.0.0", debug=True, port=port)

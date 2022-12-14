@@ -7,11 +7,18 @@ import logging
 log = logging.getLogger("get_text.py")
 log.setLevel(level=logging.INFO)
 
-wikipedia_url = 'https://de.wikipedia.org/wiki/'
 
 def from_wikipedia(article :str):
+   wikipedia_url = 'https://de.wikipedia.org/wiki/'
    url = wikipedia_url+article
+   return get_text(url)
 
+def from_heute(id="100242707"):
+   url = "https://www.heute.at/s/"+id
+   log.debug(url)
+   return get_text(url)
+
+def get_text(url):
    hdr = { 
       'Accept-Encoding': 'gzip',
       'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)',
