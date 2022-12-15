@@ -9,11 +9,31 @@ DEBUG = False
 CURRENT_FOCUS = 0
 ARTICLE_TITLE = ''
 VISITED_SPANS = set()
+NO_OF_LUECKEN = 0
+
+class counter:
+    x = 0
+    def inc(self):
+        self.x += 1
+    def dec(self):
+        self.x -= 1
+    def get(self):
+        return self.x
+
+class span_states:
+    CORRECT   = 1
+    INCORRECT = 2 
+    UNDEFINED = 3
+
+CORRECT_ANSWERS = set()
+INCORRECT_ANSWERS = set()
+
 
 def log(msg):
 #   document <= html.P()
 #   document <= str(msg)
    pass
+
 
 def get_data():
     base64_message = document.select('data')[0].value
@@ -65,8 +85,10 @@ def compare(ev):
             s.className = "luecke incorrect"
             incorrect_count += 1
             print(f"is: {a.strip()}, should be: {correct_answers[i].strip()}")
-    document.select('#output')[0].text = f"Korrekt: {correct_count}, inkorrekt: {incorrect_count}, total: {correct_count+incorrect_count}"
-    document.select('#check_result')[0].text = f'Korrekt: {correct_count} inkorrekt: {incorrect_count} total: {correct_count+incorrect_count}'
+
+def update_stats_and_log(correct_count, incorrect_count):
+    document.select('#output')[0].text = f"Korrekt: {correct_count}, inkorrekt: {incorrect_count}, total: {NO_OF_LUECKEN}"
+    document.select('#check_result')[0].text = f'Korrekt: {correct_count} inkorrekt: {incorrect_count} total: {NO_OF_LUECKEN}'
     global ARTICLE_TITLE
     log_record = {
        'correct': correct_count,
@@ -111,12 +133,28 @@ def check_span(ev):
         duple = data[para][luecke-1][0]
         solution = str(duple)
 
+    CURRENT_STATE = span_states.UNDEFINED
+
+    if (" correct" in ev.target.className):
+        CURRENT_STATE = span_states.CORRECT 
+    elif ("incorrect" in ev.target.className):
+        CURRENT_STATE = span_states.INCORRECT
+    else:
+        CURRENT_STATE = span_states.UNDEFINED
+
     if (ev.target.text == solution):
         ev.target.className = "luecke correct"
+        if (CURRENT_STATE == span_states.INCORRECT or CURRENT_STATE == span_states.UNDEFINED):
+            CORRECT_ANSWERS.add(ev.target.id)
+            INCORRECT_ANSWERS.discard(ev.target.id)
     else:
         ev.target.className = "luecke incorrect"
         print(f"richtig wäre vielmehr: {solution}")
-#    compare(ev)
+        if (CURRENT_STATE == span_states.CORRECT or CURRENT_STATE == span_states.UNDEFINED):
+            INCORRECT_ANSWERS.add(ev.target.id)
+            CORRECT_ANSWERS.discard(ev.target.id)
+    update_stats_and_log(len(CORRECT_ANSWERS), len(INCORRECT_ANSWERS))
+
 
 def get_article_from_input(ev):
    input_text = document.select('#select_text_input')[0]
@@ -143,6 +181,7 @@ def reset_globals():
    CURRENT_FOCUS = 0
    global VISITED_SPANS
    VISITED_SPANS = set()
+   CORRECT_ANSWERS = counter()
 
 def show_article(req):
    reset_globals()
@@ -155,7 +194,9 @@ def show_article(req):
       s.bind("focus", record_visit)
    #    s.bind("input", clear_span) 
       s.bind("blur", unclear_span) 
-   document.select('#check_result')[0].text = f'Korrekt: {0} inkorrekt: {0} total: {len(luecken)}'
+      global NO_OF_LUECKEN
+      NO_OF_LUECKEN = len(luecken)
+   document.select('#check_result')[0].text = f'Korrekt: {0} inkorrekt: {0} total: {NO_OF_LUECKEN}'
    document.select('span.luecke')[0].focus()
 
 def move_focus(ev):
