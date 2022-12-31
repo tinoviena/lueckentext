@@ -21,6 +21,10 @@ def test():
 def web(path):
   return send_from_directory("web", path)
 
+@app.route("/css/<path:path>")
+def css(path):
+  return send_from_directory("css", path)
+
 @app.route("/")
 def index():
   html = html_header() + html_body_start()
@@ -131,7 +135,7 @@ def html_header():
   <title>Lückentexte</title>
   <head>
       <link href="/web/styles.css" rel="stylesheet">
-      <link  id="favicon" rel="icon" href="https://cdn.glitch.global/f745eda5-f86f-4ad3-9af0-529f17db8f24/favicon.ico?v=1649580481045" />
+        <link  id="favicon" rel="icon" href="https://cdn.glitch.global/f745eda5-f86f-4ad3-9af0-529f17db8f24/favicon.ico?v=1649580481045" />
       <script src="https://cdn.jsdelivr.net/gh/brython-dev/brython@master/www/src/brython.js"></script>
       <script src="https://cdn.jsdelivr.net/gh/brython-dev/brython@master/www/src/brython_stdlib.js"></script>
       <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">

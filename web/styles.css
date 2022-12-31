@@ -4,6 +4,20 @@
    font-size: 1.1em;
 }
 
+html {
+   background-color: bisque;
+   background-image: url("white-net-bg.jpg");
+   background-attachment: fixed;
+}
+
+body {
+   width: 70%;
+   margin: 0 auto;
+   border-width: 1px;
+   border-style: dashed;
+   background-color: blanchedalmond;
+}
+
 button {
    border-width: 2px;
    border-spacing: 30px;
@@ -11,6 +25,28 @@ button {
    padding: 5px 5px 5px 5px;
    margin:  5px 5px 5px 5px;
 }
+
+.button,
+button{
+  display: inline-block;
+  height: 38px;
+  padding: 0 30px;
+  color: #555;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 38px;
+  letter-spacing: .1rem;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  background-color: #61D7A4;
+  border-radius: 4px;
+  border: 1px solid #bbb;
+  cursor: pointer;
+  box-sizing: border-box; 
+}
+
 
 
 .luecke {
